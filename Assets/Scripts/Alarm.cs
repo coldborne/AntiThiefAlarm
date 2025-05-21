@@ -13,6 +13,7 @@ public class Alarm : MonoBehaviour
     [SerializeField] private float _soundVolumeChangeDuration;
 
     private AudioSource _audioSource;
+    private Coroutine _fadeCoroutine;
     private float _minVolume;
 
     private void Awake()
@@ -20,7 +21,7 @@ public class Alarm : MonoBehaviour
         _minVolume = 0.0f;
 
         _audioSource = GetComponent<AudioSource>();
-        _audioSource.volume = 0.0f;
+        _audioSource.volume = _minVolume;
         _audioSource.loop = true;
     }
 
@@ -38,43 +39,46 @@ public class Alarm : MonoBehaviour
 
     private void TurnOn()
     {
-        _audioSource.Play();
-        StartCoroutine(FadeIn(_soundVolumeChangeDuration, _maxVolume));
+        if (_audioSource.isPlaying == false)
+        {
+            _audioSource.Play();
+        }
+
+        StartFade(_maxVolume);
     }
 
     private void TurnOff()
     {
-        StartCoroutine(FadeOut(_soundVolumeChangeDuration));
+        StartFade(_minVolume);
     }
 
-    private IEnumerator FadeIn(float duration, float targetVolume)
+    private void StartFade(float targetVolume)
+    {
+        if (_fadeCoroutine != null)
+        {
+            StopCoroutine(_fadeCoroutine);
+        }
+
+        _fadeCoroutine = StartCoroutine(FadeVolume(targetVolume));
+    }
+
+    private IEnumerator FadeVolume(float targetVolume)
     {
         float startVolume = _audioSource.volume;
         float time = 0.0f;
 
-        while (time < duration)
+        while (time < _soundVolumeChangeDuration)
         {
             time += Time.deltaTime;
-            _audioSource.volume = Mathf.Lerp(startVolume, targetVolume, time / duration);
+            _audioSource.volume = Mathf.Lerp(startVolume, targetVolume, time / _soundVolumeChangeDuration);
             yield return null;
         }
 
         _audioSource.volume = targetVolume;
-    }
 
-    private IEnumerator FadeOut(float duration)
-    {
-        float startVolume = _audioSource.volume;
-        float time = 0.0f;
-
-        while (time < duration)
+        if (Mathf.Approximately(targetVolume, _minVolume))
         {
-            time += Time.deltaTime;
-            _audioSource.volume = Mathf.Lerp(startVolume, _minVolume, time / duration);
-            yield return null;
+            _audioSource.Stop();
         }
-
-        _audioSource.volume = _minVolume;
-        _audioSource.Stop();
     }
 }
