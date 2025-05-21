@@ -1,10 +1,11 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
 public class Alarm : MonoBehaviour
 {
-    [SerializeField] private DoorOpenTrigger _doorOpenTrigger;
+    [SerializeField] private Door _door;
 
     [Header("Параметры звука")] [SerializeField, Range(0.0f, 1.0f)]
     private float _maxVolume;
@@ -21,9 +22,18 @@ public class Alarm : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
         _audioSource.volume = 0.0f;
         _audioSource.loop = true;
+    }
 
-        _doorOpenTrigger.DoorOpened += TurnOn;
-        _doorOpenTrigger.DoorClosed += TurnOff;
+    private void OnEnable()
+    {
+        _door.Opened += TurnOn;
+        _door.Closed += TurnOff;
+    }
+
+    private void OnDisable()
+    {
+        _door.Opened -= TurnOn;
+        _door.Closed -= TurnOff;
     }
 
     private void TurnOn()

@@ -1,14 +1,14 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class Movement : MonoBehaviour
+public class Mover : MonoBehaviour
 {
     private const string Horizontal = nameof(Horizontal);
     private const string Vertical = nameof(Vertical);
 
     [SerializeField, Range(50.0f, 200.0f)] private float _maxMoveSpeed;
     [SerializeField, Range(10.0f, 20.0f)] private float _moveSpeedDelta;
-    
+
     [SerializeField, Min(1.0f)] private float _rotationSpeed;
 
     private Rigidbody _rigidbody;
