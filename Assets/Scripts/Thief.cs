@@ -1,7 +1,9 @@
+using Movement;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioListener))]
 [RequireComponent(typeof(Mover))]
+[RequireComponent(typeof(Rotator))]
 public class Thief : MonoBehaviour
 {
     [SerializeField] private InputReader _inputReader;
