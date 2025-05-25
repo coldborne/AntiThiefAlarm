@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Concierge : MonoBehaviour
+public class Teleporter : MonoBehaviour
 {
     [SerializeField] private Door _door;
     [SerializeField] private DoorZone _doorZone;
@@ -22,7 +22,7 @@ public class Concierge : MonoBehaviour
     {
         if (HasThief(out Thief thief))
         {
-            Teleport(thief, _doorZone.Outside);
+            Translocate(thief, _doorZone.Outside);
         }
     }
 
@@ -30,11 +30,11 @@ public class Concierge : MonoBehaviour
     {
         if (HasThief(out Thief thief))
         {
-            Teleport(thief, _room.Center);
+            Translocate(thief, _room.Center);
         }
     }
 
-    private void Teleport(Thief thief, Vector3 to)
+    private void Translocate(Thief thief, Vector3 to)
     {
         thief.transform.position = to;
     }
